@@ -9,28 +9,11 @@ class Queue {
   }
 
   dequeue() {
-    return this.#head >= this.#tail ? null : this.#arr[this.#head++];
+    if (this.#head >= this.#tail) return null;
+    return this.#arr[this.#head++];
   }
 
   peek() {
     return this.#arr[this.#tail];
   }
-
-  print() {
-    const arr = [];
-    for (let i = this.#head; i < this.#tail; i++) {
-      arr.push(this.#arr[i]);
-    }
-
-    return arr;
-  }
 }
-
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-console.log(queue.print());
-console.log(queue.dequeue());
-console.log(queue.dequeue());
-console.log(queue.dequeue());
-console.log(queue.print());
