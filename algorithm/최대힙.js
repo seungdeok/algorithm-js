@@ -1,68 +1,61 @@
 class MaxHeap {
-  constructor() {
-    this.heap = [null]; // 0번 인덱스는 사용하지 않음
+  constructor(nums) {
+    this.heap = nums;
+    for (let i = Math.floor(this.heap.length / 2) - 1; i >= 0; i--) {
+      this.shiftDown(i);
+    }
   }
 
-  push(value) {
-    this.heap.push(value);
-
-    let currentIndex = this.heap.length - 1;
-    let parentIndex = Math.floor(currentIndex / 2);
-
-    while (
-      currentIndex > 1 &&
-      this.heap[parentIndex] < this.heap[currentIndex]
-    ) {
-      // 부모 노드와 현재 노드 교환
-      [this.heap[parentIndex], this.heap[currentIndex]] = [
-        this.heap[currentIndex],
-        this.heap[parentIndex],
-      ];
-
-      currentIndex = parentIndex;
-      parentIndex = Math.floor(currentIndex / 2);
-    }
+  push(val) {
+    this.heap.push(val);
+    this.shiftUp(this.heap.length - 1);
   }
 
   pop() {
-    if (this.heap.length <= 1) return 0;
-    if (this.heap.length === 2) return this.heap.pop();
+    [this.heap[0], this.heap[this.heap.length - 1]] = [
+      this.heap[this.heap.length - 1],
+      this.heap[0],
+    ];
+    const max = this.heap.pop();
+    this.shiftDown(0);
 
-    const returnValue = this.heap[1];
+    return max;
+  }
 
-    this.heap[1] = this.heap.pop();
+  shiftUp(i) {
+    const parentIndex = Math.floor((i - 1) / 2);
 
-    let currentIndex = 1;
-    let leftChildIndex = 2;
-    let rightChildIndex = 3;
+    if (parentIndex >= 0 && this.heap[i] > this.heap[parentIndex]) {
+      [this.heap[i], this.heap[parentIndex]] = [
+        this.heap[parentIndex],
+        this.heap[i],
+      ];
+      this.shiftUp(parentIndex);
+    }
+  }
 
-    while (
-      (leftChildIndex < this.heap.length &&
-        this.heap[currentIndex] < this.heap[leftChildIndex]) ||
-      (rightChildIndex < this.heap.length &&
-        this.heap[currentIndex] < this.heap[rightChildIndex])
+  shiftDown(i) {
+    const leftChildIndex = 2 * i + 1;
+    const rightChildIndex = 2 * i + 2;
+    let maxIndex = i;
+
+    if (
+      leftChildIndex < this.heap.length &&
+      this.heap[leftChildIndex] > this.heap[maxIndex]
     ) {
-      if (
-        rightChildIndex >= this.heap.length ||
-        this.heap[leftChildIndex] > this.heap[rightChildIndex]
-      ) {
-        [this.heap[currentIndex], this.heap[leftChildIndex]] = [
-          this.heap[leftChildIndex],
-          this.heap[currentIndex],
-        ];
-        currentIndex = leftChildIndex;
-      } else {
-        [this.heap[currentIndex], this.heap[rightChildIndex]] = [
-          this.heap[rightChildIndex],
-          this.heap[currentIndex],
-        ];
-        currentIndex = rightChildIndex;
-      }
-
-      leftChildIndex = currentIndex * 2;
-      rightChildIndex = currentIndex * 2 + 1;
+      maxIndex = leftChildIndex;
     }
 
-    return returnValue;
+    if (
+      rightChildIndex < this.heap.length &&
+      this.heap[rightChildIndex] > this.heap[maxIndex]
+    ) {
+      maxIndex = rightChildIndex;
+    }
+
+    if (maxIndex !== i) {
+      [this.heap[maxIndex], this.heap[i]] = [this.heap[i], this.heap[maxIndex]];
+      this.shiftDown(maxIndex);
+    }
   }
 }
